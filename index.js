@@ -5,7 +5,28 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 // middleware
-app.use(cors());
+// middleware
+const allowedOrigins = [
+  "http://localhost:5173", // local dev
+  "http://localhost:5174", // local dev
+  "https://rswa-web-app.web.app", // Firebase hosting URL
+  "https://rswaa.vercel.app", // Optional fallback
+  "https://rrswa.vercel.app", // Optional fallback
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -88,17 +109,22 @@ async function run() {
         res.status(500).send({ message: "Server error" });
       }
     });
+// Utility function to remove empty keys
+const cleanData = (obj) => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([key]) => key && key.trim() !== "")
+  );
+};
+app.put("/blood-group/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    let updatedData = req.body;
 
-    app.put("/blood-group/:id", async (req, res) => {
-      try {
-       const { id } = req.params;
-    const updatedData = req.body;
+    console.log("id and data is coming", id, updatedData);
 
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).send({ message: "Invalid donor ID" });
-    }
+    // Clean data to remove empty keys
+    updatedData = cleanData(updatedData);
 
-    // Check if updatedData is empty
     if (!updatedData || Object.keys(updatedData).length === 0) {
       return res.status(400).send({ message: "No data provided for update" });
     }
@@ -113,11 +139,11 @@ async function run() {
     }
 
     res.send({ message: "Donor updated successfully" });
-      } catch (error) {
-        console.error("Update error:", error);
-        res.status(500).send({ message: "Server error" });
-      }
-    });
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).send({ message: "Server error" });
+  }
+});
     // Delete a donor by ID
     app.delete("/blood-group/:id", async (req, res) => {
       try {
@@ -142,7 +168,7 @@ async function run() {
       }
     });
 
-    app.post("/add-blood-group", async (req, res) => {
+    app.post("/blood-group", async (req, res) => {
       try {
         const data = req.body;
         const result = await bloodGroupCollection.insertOne(data);
@@ -164,7 +190,7 @@ async function run() {
     // await client.close();
   }
 }
-run().catch(console.dir);
+run();
 
 app.get("/", (req, res) => {
   res.send(`RSWA server is running`);
