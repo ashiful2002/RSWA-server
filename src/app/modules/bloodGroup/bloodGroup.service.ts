@@ -1,13 +1,14 @@
-const mongoose = require("mongoose");
-const BloodGroup = require("./bloodGroup.model");
+import mongoose from "mongoose";
+import BloodGroup from "./bloodGroup.model";
+import { IBloodGroup, IBloodGroupQueryParams } from "./bloodGroup.interface";
 
-const cleanData = (obj) => {
+const cleanData = (obj: Record<string, any>) => {
   return Object.fromEntries(
     Object.entries(obj).filter(([key]) => key && key.trim() !== "")
   );
 };
 
-const getBloodGroupsFromDB = async (queryParams) => {
+const getBloodGroupsFromDB = async (queryParams: IBloodGroupQueryParams) => {
   const {
     search = "",
     bloodGroup = "",
@@ -16,6 +17,9 @@ const getBloodGroupsFromDB = async (queryParams) => {
     page = 1,
     limit = 20,
   } = queryParams;
+
+  const pageNumber = Number(page);
+  const limitNumber = Number(limit);
 
   const query = {
     $and: [
@@ -33,26 +37,25 @@ const getBloodGroupsFromDB = async (queryParams) => {
 
   const donors = await BloodGroup.find(query)
     .sort({ [sortField]: sortOrder === "asc" ? 1 : -1 })
-    .skip((page - 1) * limit)
-    .limit(parseInt(limit));
+    .skip((pageNumber - 1) * limitNumber)
+    .limit(limitNumber);
 
   return {
     total,
-    page: parseInt(page),
-    limit: parseInt(limit),
-    totalPages: Math.ceil(total / limit),
+    page: pageNumber,
+    limit: limitNumber,
+    totalPages: Math.ceil(total / limitNumber),
     data: donors,
   };
 };
 
-const updateBloodGroupInDB = async (id, updatedData) => {
+const updateBloodGroupInDB = async (id: string, updatedData: Partial<IBloodGroup>) => {
   console.log("id and data is coming", id, updatedData);
 
-  // Clean data to remove empty keys
   updatedData = cleanData(updatedData);
 
   if (!updatedData || Object.keys(updatedData).length === 0) {
-    const error = new Error("No data provided for update");
+    const error: any = new Error("No data provided for update");
     error.statusCode = 400;
     throw error;
   }
@@ -64,7 +67,7 @@ const updateBloodGroupInDB = async (id, updatedData) => {
   );
 
   if (!result) {
-    const error = new Error("Donor not found");
+    const error: any = new Error("Donor not found");
     error.statusCode = 404;
     throw error;
   }
@@ -72,9 +75,9 @@ const updateBloodGroupInDB = async (id, updatedData) => {
   return { message: "Donor updated successfully" };
 };
 
-const deleteBloodGroupFromDB = async (id) => {
+const deleteBloodGroupFromDB = async (id: string) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    const error = new Error("Invalid donor ID");
+    const error: any = new Error("Invalid donor ID");
     error.statusCode = 400;
     throw error;
   }
@@ -82,7 +85,7 @@ const deleteBloodGroupFromDB = async (id) => {
   const result = await BloodGroup.findByIdAndDelete(id);
 
   if (!result) {
-    const error = new Error("Donor not found");
+    const error: any = new Error("Donor not found");
     error.statusCode = 404;
     throw error;
   }
@@ -90,14 +93,14 @@ const deleteBloodGroupFromDB = async (id) => {
   return { message: "Donor deleted successfully" };
 };
 
-const createBloodGroupInDB = async (data) => {
+const createBloodGroupInDB = async (data: IBloodGroup) => {
   const result = await BloodGroup.create(data);
   console.log(result);
 
   return { success: true, message: "Data saved", result };
 };
 
-module.exports = {
+export const bloodGroupService = {
   getBloodGroupsFromDB,
   updateBloodGroupInDB,
   deleteBloodGroupFromDB,

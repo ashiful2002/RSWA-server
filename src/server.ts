@@ -1,6 +1,6 @@
-const app = require("./dist/app").default;
-const config = require("./dist/app/config").default;
-const { connectDB } = require("./dist/app/db/db.config");
+import app from "./app";
+import config from "./app/config";
+import { connectDB } from "./app/db/db.config";
 
 async function main() {
   try {
@@ -14,5 +14,3 @@ async function main() {
 }
 
 main();
-
-module.exports = app;

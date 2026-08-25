@@ -1,6 +1,7 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
+import { IUser } from "./user.interface";
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema<IUser>(
   {
     email: {
       type: String,
@@ -21,23 +22,20 @@ const userSchema = new mongoose.Schema(
     },
     created_at: {
       type: String,
-      default: Date.now(),
     },
     updated_at: {
       type: String,
-      default: Date.now(),
     },
     last_log_in: {
       type: String,
     },
   },
   {
-    strict: false, // allows extra fields to be preserved
+    strict: false,
     timestamps: true,
   }
 );
 
-// Mongoose model mapped to 'users' collection
-const User = mongoose.model("User", userSchema, "users");
+const User = model<IUser>("User", userSchema, "users");
 
-module.exports = User;
+export default User;

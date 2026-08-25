@@ -1,11 +1,11 @@
-const express = require("express");
-const bloodGroupController = require("./bloodGroup.controller");
+import { Router } from "express";
+import { bloodGroupController } from "./bloodGroup.controller";
 
-const router = express.Router();
+const router = Router();
 
 router.get("/", bloodGroupController.getBloodGroups);
 router.post("/", bloodGroupController.createBloodGroup);
 router.put("/:id", bloodGroupController.updateBloodGroup);
 router.delete("/:id", bloodGroupController.deleteBloodGroup);
 
-module.exports = router;
+export const bloodGroupRoutes = router;

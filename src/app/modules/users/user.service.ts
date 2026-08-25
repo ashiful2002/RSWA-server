@@ -1,15 +1,16 @@
-const User = require("./user.model");
-const Property = require("../properties/property.model");
+import User from "./user.model";
+import Property from "../properties/property.model";
+import { IUser, TUserRole } from "./user.interface";
 
 const getAllUsersFromDB = async () => {
   return await User.find({ isDeleted: { $ne: true } });
 };
 
-const getUserByEmailFromDB = async (email) => {
+const getUserByEmailFromDB = async (email: string) => {
   return await User.findOne({ email, isDeleted: { $ne: true } });
 };
 
-const getUserRoleFromDB = async (email) => {
+const getUserRoleFromDB = async (email: string) => {
   const user = await User.findOne({ email, isDeleted: { $ne: true } });
 
   if (!user) {
@@ -18,14 +19,14 @@ const getUserRoleFromDB = async (email) => {
   return { role: user.role || "donor" };
 };
 
-const updateUserRoleInDB = async (email, role) => {
+const updateUserRoleInDB = async (email: string, role: TUserRole) => {
   return await User.updateOne(
     { email, isDeleted: { $ne: true } },
     { $set: { role } }
   );
 };
 
-const markUserAsFraudInDB = async (email) => {
+const markUserAsFraudInDB = async (email: string) => {
   await User.updateOne(
     { email, isDeleted: { $ne: true } },
     { $set: { status: "fraud" } }
@@ -34,18 +35,17 @@ const markUserAsFraudInDB = async (email) => {
   return { message: "Marked as fraud and properties removed" };
 };
 
-const updateUserInDB = async (email, updateData) => {
+const updateUserInDB = async (email: string, updateData: Partial<IUser>) => {
   return await User.updateOne(
     { email, isDeleted: { $ne: true } },
     { $set: updateData }
   );
 };
 
-const saveUserToDB = async (userData) => {
+const saveUserToDB = async (userData: IUser) => {
   const existingUser = await User.findOne({ email: userData.email });
 
   if (existingUser) {
-    // update only the last log in and ensure isDeleted is false if user logs back in
     const result = await User.updateOne(
       { email: userData.email },
       {
@@ -57,7 +57,6 @@ const saveUserToDB = async (userData) => {
     );
     return { message: "User log in updated", result };
   } else {
-    // if new user - set timestamps and default isDeleted to false
     userData.created_at = new Date().toISOString();
     userData.last_log_in = new Date().toISOString();
     userData.isDeleted = false;
@@ -67,14 +66,14 @@ const saveUserToDB = async (userData) => {
   }
 };
 
-const deleteUserFromDB = async (email) => {
+const deleteUserFromDB = async (email: string) => {
   return await User.updateOne(
     { email },
     { $set: { isDeleted: true } }
   );
 };
 
-module.exports = {
+export const userService = {
   getAllUsersFromDB,
   getUserByEmailFromDB,
   getUserRoleFromDB,
