@@ -3,20 +3,34 @@ import { IBloodGroup } from "./bloodGroup.interface";
 
 const bloodGroupSchema = new Schema<IBloodGroup>(
   {
+    Timestamp: {
+      type: String,
+    },
     Name: {
       type: String,
+      required: true,
     },
     Blood_Group: {
       type: String,
+      required: true,
     },
-    Phone: {
+    Phone_Number: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    SSC_Batch: {
       type: String,
     },
-    District: {
+    Permanent_Address: {
       type: String,
     },
-    Upazila: {
+    Present_Address: {
       type: String,
+    },
+    agree: {
+      type: Boolean,
+      default: false,
     },
   },
   {

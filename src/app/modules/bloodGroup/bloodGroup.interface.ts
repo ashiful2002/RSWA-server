@@ -1,16 +1,26 @@
 export interface IBloodGroup {
-  Name?: string;
-  Blood_Group?: string;
-  Phone?: string;
-  District?: string;
-  Upazila?: string;
+  _id?: string;
+  Timestamp?: string;
+  Name: string;
+  Blood_Group: string;
+  Phone_Number: string;
+  SSC_Batch: string;
+  Permanent_Address?: string;
+  Present_Address?: string;
+  present_address?: string;
+  permanent_address?: string;
+  agree?: boolean;
+  check_mark?: boolean;
 }
 
 export interface IBloodGroupQueryParams {
   search?: string;
   bloodGroup?: string;
+  Blood_Group?: string;
   sortField?: string;
   sortOrder?: "asc" | "desc";
   page?: string | number;
   limit?: string | number;
+  startDate?: string;
+  endDate?: string;
 }

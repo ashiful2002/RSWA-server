@@ -6,7 +6,9 @@ async function main() {
   try {
     await connectDB();
     app.listen(config.port, () => {
-      console.log(`RSWA server is running in port ${config.port}`);
+      console.log(
+        `RSWA server is running in port http://localhost:${config.port}`
+      );
     });
   } catch (error) {
     console.error("Failed to start server:", error);

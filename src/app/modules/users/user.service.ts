@@ -67,10 +67,7 @@ const saveUserToDB = async (userData: IUser) => {
 };
 
 const deleteUserFromDB = async (email: string) => {
-  return await User.updateOne(
-    { email },
-    { $set: { isDeleted: true } }
-  );
+  return await User.updateOne({ email }, { $set: { isDeleted: true } });
 };
 
 export const userService = {

@@ -8,10 +8,6 @@ const app: Application = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "http://localhost:5174",
-  "http://localhost:4000",
-  "http://localhost:5000",
-  "https://rswa-web-app.web.app",
   "https://rswaa.vercel.app",
   "https://rrswa.vercel.app",
 ];
@@ -37,8 +33,8 @@ app.get("/", (req: Request, res: Response) => {
   res.send("RSWA server is running");
 });
 
-// Application routes
-app.use("/", router);
+// Application routes (supports both /api/v1 and root prefixes)
+app.use("/api/v1", router);
 
 // Global Error Handlers
 app.use(notFound);
