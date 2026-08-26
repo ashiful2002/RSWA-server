@@ -21,10 +21,7 @@ const createBloodGroupValidationSchema = z.object({
     SSC_Batch: z.string().optional(),
     Permanent_Address: z.string().optional(),
     Present_Address: z.string().optional(),
-    present_address: z.string().optional(),
-    permanent_address: z.string().optional(),
     agree: z.boolean().optional(),
-    check_mark: z.boolean().optional(),
   }),
 });
 
