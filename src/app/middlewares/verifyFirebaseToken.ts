@@ -1,15 +1,16 @@
 import { Request, Response, NextFunction } from "express";
+import { DecodedIdToken } from "firebase-admin/auth";
 import { getAuth } from "../config/firebase.config";
 
 export interface CustomRequest extends Request {
-  decoded?: any;
+  decoded?: DecodedIdToken;
 }
 
 const verifyFirebaseToken = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction
-): Promise<any> => {
+): Promise<Response | void> => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -24,8 +25,9 @@ const verifyFirebaseToken = async (
     const decoded = await getAuth().verifyIdToken(token);
     req.decoded = decoded;
     next();
-  } catch (error: any) {
-    console.error("🔥 Firebase token verification failed:", error.message);
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.error("🔥 Firebase token verification failed:", err.message);
     return res.status(403).send({
       message: "Forbidden access",
     });

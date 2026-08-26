@@ -42,10 +42,16 @@
     "@firebase/util",
     "protobufjs"
   ],
+  "pnpm": {
+    "overrides": {
+      "jose": "5.9.6"
+    }
+  },
   "overrides": {
     "jose": "5.9.6"
   }
 }
+
 
 
 

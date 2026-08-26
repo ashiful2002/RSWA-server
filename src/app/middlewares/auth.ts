@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from "express";
+import { DecodedIdToken } from "firebase-admin/auth";
 import { getAuth } from "../config/firebase.config";
 import catchAsync from "../utils/catchAsync";
 import User from "../modules/users/user.model";
-import { TUserRole } from "../modules/users/user.interface";
+import { TUserRole, IUser } from "../modules/users/user.interface";
 
 export interface CustomRequest extends Request {
-  user?: any;
-  decoded?: any;
+  user?: IUser;
+  decoded?: DecodedIdToken;
 }
 
 const auth = (...requiredRoles: TUserRole[]) => {
@@ -24,11 +25,12 @@ const auth = (...requiredRoles: TUserRole[]) => {
 
       const token = authHeader.split(" ")[1];
 
-      let decoded: any;
+      let decoded: DecodedIdToken;
       try {
         decoded = await getAuth().verifyIdToken(token);
-      } catch (error: any) {
-        console.error(" Firebase token verification failed:", error.message);
+      } catch (error: unknown) {
+        const err = error as Error;
+        console.error(" Firebase token verification failed:", err.message);
         return res.status(401).json({
           success: false,
           message: "Unauthorized access: Invalid or expired token",
