@@ -3,6 +3,7 @@ import cors from "cors";
 import router from "./app/routes";
 import notFound from "./app/middlewares/notFound";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
+import { connectDB } from "./app/db/db.config";
 
 const app: Application = express();
 
@@ -27,6 +28,16 @@ app.use(
 );
 
 app.use(express.json());
+
+// Ensure MongoDB database connection on serverless requests
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 // Root endpoint
 app.get("/", (req: Request, res: Response) => {

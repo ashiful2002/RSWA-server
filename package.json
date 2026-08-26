@@ -40,5 +40,10 @@
   "onlyBuiltDependencies": [
     "@firebase/util",
     "protobufjs"
-  ]
+  ],
+  "overrides": {
+    "jose": "5.9.6"
+  }
 }
+
+
