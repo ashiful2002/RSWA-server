@@ -1,23 +1,35 @@
 import BloodGroup from "../bloodGroup/bloodGroup.model";
 import User from "../users/user.model";
+import Project from "../project/project.model";
+import StudentAward from "../studentAward/studentAward.model";
 import { IStatsResponse } from "./stats.interface";
 
 const getStats = async (): Promise<IStatsResponse> => {
   const [
     totalDonors,
     totalUsers,
+    totalProjects,
+    totalStudentAwards,
     bloodGroupDistribution,
     sscBatchDistribution,
     topLocations,
     userRoleDistribution,
+    projectCategoryDistribution,
+    studentAwardSessionDistribution,
   ] = await Promise.all([
     // 1. Total blood donors
     BloodGroup.countDocuments(),
 
     // 2. Total registered users
-    User.countDocuments(),
+    User.countDocuments({ isDeleted: { $ne: true } }),
 
-    // 3. Blood group distribution
+    // 3. Total projects
+    Project.countDocuments(),
+
+    // 4. Total student award submissions
+    StudentAward.countDocuments(),
+
+    // 5. Blood group distribution
     BloodGroup.aggregate([
       {
         $match: {
@@ -33,7 +45,7 @@ const getStats = async (): Promise<IStatsResponse> => {
       { $sort: { count: -1 } },
     ]),
 
-    // 4. SSC Batch distribution
+    // 6. SSC Batch distribution
     BloodGroup.aggregate([
       {
         $match: {
@@ -49,7 +61,7 @@ const getStats = async (): Promise<IStatsResponse> => {
       { $sort: { _id: 1 } },
     ]),
 
-    // 5. Top present address locations
+    // 7. Top present address locations
     BloodGroup.aggregate([
       {
         $match: {
@@ -66,11 +78,12 @@ const getStats = async (): Promise<IStatsResponse> => {
       { $limit: 10 },
     ]),
 
-    // 6. User role distribution
+    // 8. User role distribution
     User.aggregate([
       {
         $match: {
           role: { $exists: true, $ne: "" },
+          isDeleted: { $ne: true },
         },
       },
       {
@@ -81,15 +94,51 @@ const getStats = async (): Promise<IStatsResponse> => {
       },
       { $sort: { count: -1 } },
     ]),
+
+    // 9. Project category distribution
+    Project.aggregate([
+      {
+        $match: {
+          category: { $exists: true, $ne: "" },
+        },
+      },
+      {
+        $group: {
+          _id: "$category",
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { count: -1 } },
+    ]),
+
+    // 10. Student Award session distribution
+    StudentAward.aggregate([
+      {
+        $match: {
+          session: { $exists: true, $ne: "" },
+        },
+      },
+      {
+        $group: {
+          _id: "$session",
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]),
   ]);
 
   return {
     totalDonors,
     totalUsers,
+    totalProjects,
+    totalStudentAwards,
     bloodGroupDistribution,
     sscBatchDistribution,
     topLocations,
     userRoleDistribution,
+    projectCategoryDistribution,
+    studentAwardSessionDistribution,
   };
 };
 

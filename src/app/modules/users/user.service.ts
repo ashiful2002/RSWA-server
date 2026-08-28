@@ -3,7 +3,7 @@ import Property from "../properties/property.model";
 import { IUser, TUserRole } from "./user.interface";
 
 const getAllUsersFromDB = async () => {
-  return await User.find({ isDeleted: { $ne: true } });
+  return await User.find({ isDeleted: { $ne: true } }).sort({ createdAt: -1 });
 };
 
 const getUserByEmailFromDB = async (email: string) => {
@@ -46,20 +46,27 @@ const saveUserToDB = async (userData: IUser) => {
   const existingUser = await User.findOne({ email: userData.email });
 
   if (existingUser) {
+    const updatePayload: Record<string, any> = {
+      last_log_in: new Date().toISOString(),
+      isDeleted: false,
+    };
+
+    if (userData.displayName) updatePayload.displayName = userData.displayName;
+    if (userData.name) updatePayload.name = userData.name;
+    if (userData.photoURL) updatePayload.photoURL = userData.photoURL;
+
     const result = await User.updateOne(
       { email: userData.email },
-      {
-        $set: {
-          last_log_in: new Date().toISOString(),
-          isDeleted: false,
-        },
-      }
+      { $set: updatePayload }
     );
     return { message: "User log in updated", result };
   } else {
     userData.created_at = new Date().toISOString();
     userData.last_log_in = new Date().toISOString();
     userData.isDeleted = false;
+    if (!userData.role) {
+      userData.role = "donor";
+    }
 
     const result = await User.create(userData);
     return { message: "New User created", result };

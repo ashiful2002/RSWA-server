@@ -13,6 +13,8 @@ const getBloodGroupsFromDB = async (queryParams: IBloodGroupQueryParams) => {
     search = "",
     bloodGroup = "",
     Blood_Group = "",
+    sscBatch = "",
+    SSC_Batch = "",
     sortField = "createdAt",
     sortOrder = "desc",
     page = 1,
@@ -34,6 +36,16 @@ const getBloodGroupsFromDB = async (queryParams: IBloodGroupQueryParams) => {
       .replace(/ /g, "[+\\s]");
     bloodGroupCondition = {
       Blood_Group: { $regex: `^${flexiblePattern}$`, $options: "i" },
+    };
+  }
+
+  const targetSSCBatch = (sscBatch || SSC_Batch || "").trim();
+  let sscBatchCondition: Record<string, unknown> | null = null;
+
+  if (targetSSCBatch) {
+    const escapedBatch = targetSSCBatch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    sscBatchCondition = {
+      SSC_Batch: { $regex: escapedBatch, $options: "i" },
     };
   }
 
@@ -75,10 +87,11 @@ const getBloodGroupsFromDB = async (queryParams: IBloodGroupQueryParams) => {
           { Phone_Number: { $regex: search, $options: "i" } },
           // { Permanent_Address: { $regex: search, $options: "i" } },
           // { Present_Address: { $regex: search, $options: "i" } },
-          // { SSC_Batch: { $regex: search, $options: "i" } },
+          { SSC_Batch: { $regex: search, $options: "i" } },
         ],
       },
       ...(bloodGroupCondition ? [bloodGroupCondition] : []),
+      ...(sscBatchCondition ? [sscBatchCondition] : []),
       ...dateFilter,
     ],
   };
@@ -117,7 +130,7 @@ const updateBloodGroupInDB = async (
   id: string,
   updatedData: Partial<IBloodGroup>
 ) => {
-  console.log("id and data is coming", id, updatedData);
+  // console.log("id and data is coming", id, updatedData);
 
   updatedData = cleanData(updatedData);
 
@@ -139,7 +152,7 @@ const updateBloodGroupInDB = async (
     throw error;
   }
 
-  return { message: "Donor updated successfully" };
+  return result;
 };
 
 const deleteBloodGroupFromDB = async (id: string) => {
@@ -157,7 +170,7 @@ const deleteBloodGroupFromDB = async (id: string) => {
     throw error;
   }
 
-  return { message: "Donor deleted successfully" };
+  return result;
 };
 
 const createBloodGroupInDB = async (data: IBloodGroup) => {

@@ -6,7 +6,11 @@ import { userController } from "./user.controller";
 const router = Router();
 
 // Get all users (Admin & Moderator only)
-router.get("/", auth(USER_ROLE.admin), userController.getAllUsers);
+router.get(
+  "/",
+  auth(USER_ROLE.admin, USER_ROLE.moderator),
+  userController.getAllUsers
+);
 
 // Get user by email
 router.get("/:email", userController.getUserByEmail);

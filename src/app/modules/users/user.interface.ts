@@ -3,6 +3,9 @@ export type TUserRole = "donor" | "moderator" | "admin";
 export interface IUser {
   email: string;
   role: TUserRole;
+  displayName?: string;
+  name?: string;
+  photoURL?: string;
   status?: string;
   isDeleted?: boolean;
   created_at?: string;

@@ -17,6 +17,8 @@ export interface IBloodGroupQueryParams {
   search?: string;
   bloodGroup?: string;
   Blood_Group?: string;
+  sscBatch?: string;
+  SSC_Batch?: string;
   sortField?: string;
   sortOrder?: "asc" | "desc";
   page?: string | number;

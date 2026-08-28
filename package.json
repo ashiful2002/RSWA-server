@@ -9,6 +9,7 @@
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "format": "prettier --write 'src/**/*.ts'",
+    "seed:projects": "ts-node-dev src/app/db/seedProjects.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
