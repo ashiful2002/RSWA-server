@@ -17,18 +17,18 @@ router.post(
   bloodGroupController.createBloodGroup
 );
 
-// Update donor details (Admin & Moderator)
+// Update donor details (Super Admin, Admin & Moderator)
 router.put(
   "/:id",
-  auth(USER_ROLE.admin, USER_ROLE.moderator),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin, USER_ROLE.moderator),
   validateRequest(bloodGroupValidation.updateBloodGroupValidationSchema),
   bloodGroupController.updateBloodGroup
 );
 
-// Delete donor (Admin only)
+// Delete donor (Super Admin & Admin)
 router.delete(
   "/:id",
-  auth(USER_ROLE.admin),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin),
   bloodGroupController.deleteBloodGroup
 );
 

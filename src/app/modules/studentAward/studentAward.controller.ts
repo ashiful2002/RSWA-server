@@ -94,30 +94,11 @@ const deleteStudentAwardSubmission = async (req: Request, res: Response) => {
   }
 };
 
-const seedStudentAwardData = async (_req: Request, res: Response) => {
-  try {
-    const result = await studentAwardService.seedStudentAwardDataInDB();
-
-    res.status(200).json({
-      success: true,
-      message: result.message,
-      count: result.count,
-      data: result.data || [],
-    });
-  } catch (error) {
-    const err = error as Error & { statusCode?: number };
-    res.status(err.statusCode || 500).json({
-      success: false,
-      message: err.message || "Failed to seed student award data",
-      error: err,
-    });
-  }
-};
-
+ 
 export const studentAwardController = {
   createStudentAwardSubmission,
   getAllStudentAwardSubmissions,
   getSingleStudentAwardSubmission,
   deleteStudentAwardSubmission,
-  seedStudentAwardData,
+ 
 };

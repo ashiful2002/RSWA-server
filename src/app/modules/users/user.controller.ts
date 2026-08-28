@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { userService } from "./user.service";
+import { CustomRequest } from "../../middlewares/auth";
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const result = await userService.getAllUsersFromDB();
@@ -85,7 +86,13 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
-  const userData = req.body;
+  const userData = req.body || {};
+  const decodedEmail = (req as CustomRequest).decoded?.email;
+
+  if (decodedEmail && (!userData.email || userData.email !== decodedEmail)) {
+    userData.email = decodedEmail;
+  }
+
   const result = await userService.saveUserToDB(userData);
 
   sendResponse(res, {

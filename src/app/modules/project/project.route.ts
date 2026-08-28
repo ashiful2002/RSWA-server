@@ -14,21 +14,21 @@ router.get("/:id", projectController.getSingleProject);
 // Protected routes to create, update, delete projects
 router.post(
   "/",
-  auth(USER_ROLE.admin, USER_ROLE.moderator),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin, USER_ROLE.moderator),
   validateRequest(projectValidation.createProjectValidationSchema),
   projectController.createProject
 );
 
 router.put(
   "/:id",
-  auth(USER_ROLE.admin, USER_ROLE.moderator),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin, USER_ROLE.moderator),
   validateRequest(projectValidation.updateProjectValidationSchema),
   projectController.updateProject
 );
 
 router.delete(
   "/:id",
-  auth(USER_ROLE.admin),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin),
   projectController.deleteProject
 );
 

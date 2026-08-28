@@ -1,5 +1,6 @@
 export const USER_ROLE = {
-  donor: "donor",
-  moderator: "moderator",
+  super_admin: "super_admin",
   admin: "admin",
+  moderator: "moderator",
+  donor: "donor",
 } as const;

@@ -1,4 +1,4 @@
-export type TUserRole = "donor" | "moderator" | "admin";
+export type TUserRole = "super_admin" | "admin" | "moderator" | "donor";
 
 export interface IUser {
   email: string;

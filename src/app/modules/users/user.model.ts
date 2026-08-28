@@ -10,8 +10,17 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ["donor", "moderator", "admin"],
+      enum: ["super_admin", "admin", "moderator", "donor"],
       default: "donor",
+    },
+    displayName: {
+      type: String,
+    },
+    name: {
+      type: String,
+    },
+    photoURL: {
+      type: String,
     },
     status: {
       type: String,

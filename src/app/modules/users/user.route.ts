@@ -5,10 +5,10 @@ import { userController } from "./user.controller";
 
 const router = Router();
 
-// Get all users (Admin & Moderator only)
+// Get all users (Super Admin & Admin)
 router.get(
   "/",
-  auth(USER_ROLE.admin, USER_ROLE.moderator),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin),
   userController.getAllUsers
 );
 
@@ -18,32 +18,35 @@ router.get("/:email", userController.getUserByEmail);
 // Get user role (Any logged in user)
 router.get(
   "/:email/role",
-  auth(USER_ROLE.admin, USER_ROLE.moderator, USER_ROLE.donor),
+  auth({
+    allowNewUser: true,
+    roles: [USER_ROLE.super_admin, USER_ROLE.admin, USER_ROLE.moderator, USER_ROLE.donor],
+  }),
   userController.getUserRole
 );
 
-// Update user role (Admin only)
+// Update user role (Super Admin & Admin)
 router.put(
   "/:email/role",
-  auth(USER_ROLE.admin),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin),
   userController.updateUserRole
 );
 
-// Update user info (Authenticated User or Admin)
+// Update user info (Authenticated User or Admin/Super Admin)
 router.put(
   "/:email",
-  auth(USER_ROLE.admin, USER_ROLE.moderator, USER_ROLE.donor),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin, USER_ROLE.moderator, USER_ROLE.donor),
   userController.updateUser
 );
 
 // Create / Login user (Any authenticated Firebase user)
 router.post(
   "/",
-  auth(USER_ROLE.admin, USER_ROLE.moderator, USER_ROLE.donor),
+  auth({ allowNewUser: true }),
   userController.createUser
 );
 
-// Delete / Soft-delete user (Admin only)
-router.delete("/:email", auth(USER_ROLE.admin), userController.deleteUser);
+// Delete / Soft-delete user (Super Admin & Admin)
+router.delete("/:email", auth(USER_ROLE.super_admin, USER_ROLE.admin), userController.deleteUser);
 
 export const userRoutes = router;

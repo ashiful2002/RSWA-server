@@ -102,74 +102,11 @@ const deleteStudentAwardSubmissionFromDB = async (id: string) => {
   return result;
 };
 
-const seedStudentAwardDataInDB = async () => {
-  const count = await StudentAward.countDocuments();
-  if (count > 0) {
-    return {
-      message: "Database already contains student award records",
-      count,
-    };
-  }
 
-  const seedData: Partial<IStudentAward>[] = [
-    {
-      nameEnglish: "Md. Tanvir Ahmed",
-      nameBangla: "মোঃ তানভীর আহমেদ",
-      email: "tanvir.du@gmail.com",
-      phoneNumber: "01712345678",
-      session: "2025-26",
-      university: "University of Dhaka (ঢাবি)",
-      sscSchool: "Rowmari CG Zaman High School",
-      hscCollege: "Rowmari Government College",
-      submittedAt: new Date(),
-    },
-    {
-      nameEnglish: "Nusrat Jahan Mim",
-      nameBangla: "নুসরাত জাহান মিম",
-      email: "nusrat.ru@gmail.com",
-      phoneNumber: "01898765432",
-      session: "2025-26",
-      university: "University of Rajshahi (রাবি)",
-      sscSchool: "Rowmari Girls High School",
-      hscCollege: "Kortimari Degree College",
-      submittedAt: new Date(),
-    },
-    {
-      nameEnglish: "Abdur Rahman",
-      nameBangla: "আব্দুর রহমান",
-      email: "rahman.buet@gmail.com",
-      phoneNumber: "01911223344",
-      session: "2026-27",
-      university: "Bangladesh University of Engineering and Technology (BUET)",
-      sscSchool: "Jadurchar High School",
-      hscCollege: "Dhaka College",
-      submittedAt: new Date(),
-    },
-    {
-      nameEnglish: "Sabrina Akter",
-      nameBangla: "সাবরিনা আক্তার",
-      email: "sabrina.gst@gmail.com",
-      phoneNumber: "01655443322",
-      session: "2026-27",
-      university: "GST Cluster (জিএসটি গুচ্ছভুক্ত পাবলিক বিশ্ববিদ্যালয়)",
-      sscSchool: "Rowmari Model High School",
-      hscCollege: "Rowmari Government College",
-      submittedAt: new Date(),
-    },
-  ];
-
-  const result = await StudentAward.insertMany(seedData);
-  return {
-    message: "Seed data inserted successfully",
-    count: result.length,
-    data: result,
-  };
-};
 
 export const studentAwardService = {
   createStudentAwardSubmissionInDB,
   getAllStudentAwardSubmissionsFromDB,
   getSingleStudentAwardSubmissionFromDB,
   deleteStudentAwardSubmissionFromDB,
-  seedStudentAwardDataInDB,
 };

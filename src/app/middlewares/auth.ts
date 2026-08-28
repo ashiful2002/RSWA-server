@@ -10,7 +10,25 @@ export interface CustomRequest extends Request {
   decoded?: DecodedIdToken;
 }
 
-const auth = (...requiredRoles: TUserRole[]) => {
+export interface AuthOptions {
+  roles?: TUserRole[];
+  allowNewUser?: boolean;
+}
+
+const auth = (...args: (TUserRole | AuthOptions)[]) => {
+  let requiredRoles: TUserRole[] = [];
+  let allowNewUser = false;
+
+  if (args.length === 1 && typeof args[0] === "object" && args[0] !== null) {
+    const opts = args[0] as AuthOptions;
+    requiredRoles = opts.roles || [];
+    allowNewUser = !!opts.allowNewUser;
+  } else {
+    requiredRoles = args.filter(
+      (arg): arg is TUserRole => typeof arg === "string"
+    );
+  }
+
   return catchAsync(
     async (req: CustomRequest, res: Response, next: NextFunction) => {
       const authHeader = req.headers.authorization;
@@ -45,18 +63,40 @@ const auth = (...requiredRoles: TUserRole[]) => {
         });
       }
 
+      req.decoded = decoded;
+
       // Retrieve user from database to verify active status and role
-      const user = await User.findOne({ email, isDeleted: { $ne: true } });
+      const user = await User.findOne({ email: email.toLowerCase().trim(), isDeleted: { $ne: true } });
 
       if (!user) {
+        if (allowNewUser) {
+          req.user = undefined;
+          return next();
+        }
+
         return res.status(404).json({
           success: false,
           message: "User not found or account disabled!",
         });
       }
 
-      // Role-Based Authorization check
-      if (requiredRoles.length > 0 && !requiredRoles.includes(user.role)) {
+      if (user.status === "fraud") {
+        return res.status(403).json({
+          success: false,
+          message: "Forbidden access: Account has been restricted",
+        });
+      }
+
+      // Role-Based Authorization check: super_admin has full access across all protected routes
+      console.log(`[AUTH DEBUG] User Email: ${user.email}, Role: ${user.role}`);
+      console.log(`[AUTH DEBUG] Required Roles: ${requiredRoles.join(", ")}`);
+
+      if (
+        requiredRoles.length > 0 &&
+        user.role !== "super_admin" &&
+        !requiredRoles.includes(user.role)
+      ) {
+        console.log(`[AUTH DEBUG] FORBIDDEN! User role ${user.role} not in required roles.`);
         return res.status(403).json({
           success: false,
           message:
@@ -64,7 +104,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
         });
       }
 
-      req.decoded = decoded;
       req.user = user;
       next();
     }
