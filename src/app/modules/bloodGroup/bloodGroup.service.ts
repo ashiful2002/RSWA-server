@@ -142,6 +142,20 @@ const updateBloodGroupInDB = async (
     throw error;
   }
 
+  if (updatedData.Phone_Number) {
+    const existingPhone = await BloodGroup.findOne({
+      Phone_Number: updatedData.Phone_Number.trim(),
+      _id: { $ne: id },
+    });
+    if (existingPhone) {
+      const error = new Error("This phone number is already registered as a blood donor.") as Error & {
+        statusCode?: number;
+      };
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+
   const result = await BloodGroup.findByIdAndUpdate(
     id,
     { $set: updatedData },
@@ -182,6 +196,19 @@ const deleteBloodGroupFromDB = async (id: string) => {
 };
 
 const createBloodGroupInDB = async (data: IBloodGroup) => {
+  if (data.Phone_Number) {
+    const existingPhone = await BloodGroup.findOne({
+      Phone_Number: data.Phone_Number.trim(),
+    });
+    if (existingPhone) {
+      const error = new Error("This phone number is already registered as a blood donor.") as Error & {
+        statusCode?: number;
+      };
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+
   if (!data.Timestamp) {
     const now = new Date();
     const month = now.getMonth() + 1;
