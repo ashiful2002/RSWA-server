@@ -135,7 +135,9 @@ const updateBloodGroupInDB = async (
   updatedData = cleanData(updatedData);
 
   if (!updatedData || Object.keys(updatedData).length === 0) {
-    const error = new Error("No data provided for update") as Error & { statusCode?: number };
+    const error = new Error("No data provided for update") as Error & {
+      statusCode?: number;
+    };
     error.statusCode = 400;
     throw error;
   }
@@ -147,7 +149,9 @@ const updateBloodGroupInDB = async (
   );
 
   if (!result) {
-    const error = new Error("Donor not found") as Error & { statusCode?: number };
+    const error = new Error("Donor not found") as Error & {
+      statusCode?: number;
+    };
     error.statusCode = 404;
     throw error;
   }
@@ -157,7 +161,9 @@ const updateBloodGroupInDB = async (
 
 const deleteBloodGroupFromDB = async (id: string) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    const error = new Error("Invalid donor ID") as Error & { statusCode?: number };
+    const error = new Error("Invalid donor ID") as Error & {
+      statusCode?: number;
+    };
     error.statusCode = 400;
     throw error;
   }
@@ -165,7 +171,9 @@ const deleteBloodGroupFromDB = async (id: string) => {
   const result = await BloodGroup.findByIdAndDelete(id);
 
   if (!result) {
-    const error = new Error("Donor not found") as Error & { statusCode?: number };
+    const error = new Error("Donor not found") as Error & {
+      statusCode?: number;
+    };
     error.statusCode = 404;
     throw error;
   }

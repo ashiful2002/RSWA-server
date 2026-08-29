@@ -20,7 +20,12 @@ router.get(
   "/:email/role",
   auth({
     allowNewUser: true,
-    roles: [USER_ROLE.super_admin, USER_ROLE.admin, USER_ROLE.moderator, USER_ROLE.donor],
+    roles: [
+      USER_ROLE.super_admin,
+      USER_ROLE.admin,
+      USER_ROLE.moderator,
+      USER_ROLE.donor,
+    ],
   }),
   userController.getUserRole
 );
@@ -35,18 +40,23 @@ router.put(
 // Update user info (Authenticated User or Admin/Super Admin)
 router.put(
   "/:email",
-  auth(USER_ROLE.super_admin, USER_ROLE.admin, USER_ROLE.moderator, USER_ROLE.donor),
+  auth(
+    USER_ROLE.super_admin,
+    USER_ROLE.admin,
+    USER_ROLE.moderator,
+    USER_ROLE.donor
+  ),
   userController.updateUser
 );
 
 // Create / Login user (Any authenticated Firebase user)
-router.post(
-  "/",
-  auth({ allowNewUser: true }),
-  userController.createUser
-);
+router.post("/", auth({ allowNewUser: true }), userController.createUser);
 
 // Delete / Soft-delete user (Super Admin & Admin)
-router.delete("/:email", auth(USER_ROLE.super_admin, USER_ROLE.admin), userController.deleteUser);
+router.delete(
+  "/:email",
+  auth(USER_ROLE.super_admin, USER_ROLE.admin),
+  userController.deleteUser
+);
 
 export const userRoutes = router;

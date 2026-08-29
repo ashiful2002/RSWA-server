@@ -66,7 +66,10 @@ const auth = (...args: (TUserRole | AuthOptions)[]) => {
       req.decoded = decoded;
 
       // Retrieve user from database to verify active status and role
-      const user = await User.findOne({ email: email.toLowerCase().trim(), isDeleted: { $ne: true } });
+      const user = await User.findOne({
+        email: email.toLowerCase().trim(),
+        isDeleted: { $ne: true },
+      });
 
       if (!user) {
         if (allowNewUser) {
@@ -96,7 +99,9 @@ const auth = (...args: (TUserRole | AuthOptions)[]) => {
         user.role !== "super_admin" &&
         !requiredRoles.includes(user.role)
       ) {
-        console.log(`[AUTH DEBUG] FORBIDDEN! User role ${user.role} not in required roles.`);
+        console.log(
+          `[AUTH DEBUG] FORBIDDEN! User role ${user.role} not in required roles.`
+        );
         return res.status(403).json({
           success: false,
           message:

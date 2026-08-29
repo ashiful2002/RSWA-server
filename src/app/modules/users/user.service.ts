@@ -8,12 +8,18 @@ const getAllUsersFromDB = async () => {
 
 const getUserByEmailFromDB = async (email: string) => {
   const normalizedEmail = email.toLowerCase().trim();
-  return await User.findOne({ email: normalizedEmail, isDeleted: { $ne: true } });
+  return await User.findOne({
+    email: normalizedEmail,
+    isDeleted: { $ne: true },
+  });
 };
 
 const getUserRoleFromDB = async (email: string) => {
   const normalizedEmail = email.toLowerCase().trim();
-  const user = await User.findOne({ email: normalizedEmail, isDeleted: { $ne: true } });
+  const user = await User.findOne({
+    email: normalizedEmail,
+    isDeleted: { $ne: true },
+  });
 
   if (!user) {
     return { role: "donor" as TUserRole };
@@ -88,7 +94,10 @@ const saveUserToDB = async (userData: IUser) => {
 
 const deleteUserFromDB = async (email: string) => {
   const normalizedEmail = email.toLowerCase().trim();
-  return await User.updateOne({ email: normalizedEmail }, { $set: { isDeleted: true } });
+  return await User.updateOne(
+    { email: normalizedEmail },
+    { $set: { isDeleted: true } }
+  );
 };
 
 export const userService = {

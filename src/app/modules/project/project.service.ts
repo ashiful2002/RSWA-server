@@ -121,7 +121,9 @@ const getSingleProjectFromDB = async (idOrSlug: string) => {
 
   const project = await Project.findOne(query);
   if (!project) {
-    const error = new Error("Project not found") as Error & { statusCode?: number };
+    const error = new Error("Project not found") as Error & {
+      statusCode?: number;
+    };
     error.statusCode = 404;
     throw error;
   }
@@ -144,7 +146,9 @@ const updateProjectInDB = async (id: string, payload: Partial<IProject>) => {
   }
 
   const isObjectId = mongoose.Types.ObjectId.isValid(id);
-  const filter = isObjectId ? { $or: [{ _id: id }, { slug: id }] } : { slug: id };
+  const filter = isObjectId
+    ? { $or: [{ _id: id }, { slug: id }] }
+    : { slug: id };
 
   const result = await Project.findOneAndUpdate(
     filter,
@@ -153,7 +157,9 @@ const updateProjectInDB = async (id: string, payload: Partial<IProject>) => {
   );
 
   if (!result) {
-    const error = new Error("Project not found") as Error & { statusCode?: number };
+    const error = new Error("Project not found") as Error & {
+      statusCode?: number;
+    };
     error.statusCode = 404;
     throw error;
   }
@@ -169,7 +175,9 @@ const deleteProjectFromDB = async (idOrSlug: string) => {
 
   const result = await Project.findOneAndDelete(filter);
   if (!result) {
-    const error = new Error("Project not found") as Error & { statusCode?: number };
+    const error = new Error("Project not found") as Error & {
+      statusCode?: number;
+    };
     error.statusCode = 404;
     throw error;
   }

@@ -1,9 +1,5 @@
 export type ProjectCategory =
-  | "Education"
-  | "Health"
-  | "Environment"
-  | "Relief"
-  | "Cultural";
+  "Education" | "Health" | "Environment" | "Relief" | "Cultural";
 
 export type ProjectStatus = "Active" | "Upcoming" | "Completed";
 

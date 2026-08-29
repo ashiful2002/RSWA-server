@@ -18,11 +18,15 @@ const studentAwardSchema = new Schema<IStudentAward>(
       required: [true, "Email is required"],
       trim: true,
       lowercase: true,
+      unique: true,
+      message: "This email is already used",
     },
     phoneNumber: {
       type: String,
       required: [true, "Phone number is required"],
       trim: true,
+      unique: true,
+      message: "This phone number is already used",
     },
     session: {
       type: String,

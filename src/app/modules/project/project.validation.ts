@@ -14,9 +14,12 @@ const createProjectValidationSchema = z.object({
       })
       .min(1, "Project title cannot be empty"),
     slug: z.string().optional(),
-    category: z.enum(["Education", "Health", "Environment", "Relief", "Cultural"], {
-      message: "Category is required",
-    }),
+    category: z.enum(
+      ["Education", "Health", "Environment", "Relief", "Cultural"],
+      {
+        message: "Category is required",
+      }
+    ),
     status: z.enum(["Active", "Upcoming", "Completed"]).optional(),
     thumbnail: z
       .string({

@@ -5,6 +5,34 @@ import {
 } from "./studentAward.interface";
 
 const createStudentAwardSubmissionInDB = async (payload: IStudentAward) => {
+  // Check for duplicate email
+  if (payload.email) {
+    const existingEmail = await StudentAward.findOne({
+      email: payload.email.toLowerCase().trim(),
+    });
+    if (existingEmail) {
+      const error = new Error("This email is already used") as Error & {
+        statusCode?: number;
+      };
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+
+  // Check for duplicate phone number
+  if (payload.phoneNumber) {
+    const existingPhone = await StudentAward.findOne({
+      phoneNumber: payload.phoneNumber.trim(),
+    });
+    if (existingPhone) {
+      const error = new Error("This phone number is already used") as Error & {
+        statusCode?: number;
+      };
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+
   const result = await StudentAward.create(payload);
   return result;
 };
@@ -101,8 +129,6 @@ const deleteStudentAwardSubmissionFromDB = async (id: string) => {
   }
   return result;
 };
-
-
 
 export const studentAwardService = {
   createStudentAwardSubmissionInDB,

@@ -24,9 +24,8 @@ const createStudentAwardSubmission = async (req: Request, res: Response) => {
 
 const getAllStudentAwardSubmissions = async (req: Request, res: Response) => {
   try {
-    const result = await studentAwardService.getAllStudentAwardSubmissionsFromDB(
-      req.query
-    );
+    const result =
+      await studentAwardService.getAllStudentAwardSubmissionsFromDB(req.query);
 
     res.status(200).json({
       success: true,
@@ -49,14 +48,13 @@ const getAllStudentAwardSubmissions = async (req: Request, res: Response) => {
   }
 };
 
-const getSingleStudentAwardSubmission = async (
-  req: Request,
-  res: Response
-) => {
+const getSingleStudentAwardSubmission = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const result =
-      await studentAwardService.getSingleStudentAwardSubmissionFromDB(id as string);
+      await studentAwardService.getSingleStudentAwardSubmissionFromDB(
+        id as string
+      );
 
     res.status(200).json({
       success: true,
@@ -76,8 +74,9 @@ const getSingleStudentAwardSubmission = async (
 const deleteStudentAwardSubmission = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result =
-      await studentAwardService.deleteStudentAwardSubmissionFromDB(id as string);
+    const result = await studentAwardService.deleteStudentAwardSubmissionFromDB(
+      id as string
+    );
 
     res.status(200).json({
       success: true,
@@ -94,11 +93,9 @@ const deleteStudentAwardSubmission = async (req: Request, res: Response) => {
   }
 };
 
- 
 export const studentAwardController = {
   createStudentAwardSubmission,
   getAllStudentAwardSubmissions,
   getSingleStudentAwardSubmission,
   deleteStudentAwardSubmission,
- 
 };
