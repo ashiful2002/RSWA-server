@@ -4,6 +4,7 @@ import { bloodGroupRoutes } from "../modules/bloodGroup/bloodGroup.route";
 import { statsRoutes } from "../modules/stats/stats.route";
 import { projectRoutes } from "../modules/project/project.route";
 import { studentAwardRoutes } from "../modules/studentAward/studentAward.route";
+import { committeeRoutes } from "../modules/committee/committee.route";
 
 const router = Router();
 
@@ -18,6 +19,7 @@ const moduleRoutes: IModuleRoute[] = [
   { path: "/stats", route: statsRoutes },
   { path: "/projects", route: projectRoutes },
   { path: "/student-award", route: studentAwardRoutes },
+  { path: "/committee", route: committeeRoutes },
 ];
 
 moduleRoutes.forEach((r) => router.use(r.path, r.route));
