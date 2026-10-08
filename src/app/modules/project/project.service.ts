@@ -114,7 +114,7 @@ const getAllProjectsFromDB = async (queryParams: IProjectQueryParams) => {
 };
 
 const getSingleProjectFromDB = async (idOrSlug: string) => {
-  const isObjectId = mongoose.Types.ObjectId.isValid(idOrSlug);
+  const isObjectId = mongoose.isValidObjectId(idOrSlug);
   const query = isObjectId
     ? { $or: [{ _id: idOrSlug }, { slug: idOrSlug }] }
     : { slug: idOrSlug };
@@ -145,7 +145,7 @@ const updateProjectInDB = async (id: string, payload: Partial<IProject>) => {
     }
   }
 
-  const isObjectId = mongoose.Types.ObjectId.isValid(id);
+  const isObjectId = mongoose.isValidObjectId(id);
   const filter = isObjectId
     ? { $or: [{ _id: id }, { slug: id }] }
     : { slug: id };
@@ -168,7 +168,7 @@ const updateProjectInDB = async (id: string, payload: Partial<IProject>) => {
 };
 
 const deleteProjectFromDB = async (idOrSlug: string) => {
-  const isObjectId = mongoose.Types.ObjectId.isValid(idOrSlug);
+  const isObjectId = mongoose.isValidObjectId(idOrSlug);
   const filter = isObjectId
     ? { $or: [{ _id: idOrSlug }, { slug: idOrSlug }] }
     : { slug: idOrSlug };
