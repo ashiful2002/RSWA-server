@@ -43,7 +43,9 @@ const getAllStudentAwardSubmissionsFromDB = async (
   const {
     search = "",
     session = "",
+    hscPassingYear = "",
     university = "",
+    awardType = "",
     sortField = "createdAt",
     sortOrder = "desc",
     page = 1,
@@ -64,14 +66,39 @@ const getAllStudentAwardSubmissionsFromDB = async (
         { email: searchRegex },
         { phoneNumber: searchRegex },
         { university: searchRegex },
+        { instituteName: searchRegex },
+        { sscBatch: searchRegex },
+        { hscPassingYear: searchRegex },
+        { sscPassingYear: searchRegex },
         { sscSchool: searchRegex },
         { hscCollege: searchRegex },
+        { presentCollege: searchRegex },
       ],
     });
   }
 
   if (session.trim()) {
     andConditions.push({ session: session.trim() });
+  }
+
+  if (hscPassingYear.trim()) {
+    andConditions.push({ hscPassingYear: hscPassingYear.trim() });
+  }
+
+  if (awardType.trim()) {
+    if (awardType.trim() === "admission") {
+      // Matches both explicit "admission" or legacy documents where awardType is missing / null
+      andConditions.push({
+        $or: [
+          { awardType: "admission" },
+          { awardType: { $exists: false } },
+          { awardType: null },
+          { awardType: "" },
+        ],
+      });
+    } else {
+      andConditions.push({ awardType: awardType.trim() });
+    }
   }
 
   if (university.trim()) {
