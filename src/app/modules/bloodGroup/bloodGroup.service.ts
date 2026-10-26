@@ -159,7 +159,7 @@ const updateBloodGroupInDB = async (
   const result = await BloodGroup.findByIdAndUpdate(
     id,
     { $set: updatedData },
-    { new: true }
+    { returnDocument: "after" }
   );
 
   if (!result) {

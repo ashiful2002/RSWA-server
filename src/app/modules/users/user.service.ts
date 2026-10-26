@@ -76,7 +76,7 @@ const saveUserToDB = async (userData: IUser) => {
     const result = await User.findOneAndUpdate(
       { email: normalizedEmail },
       { $set: updatePayload },
-      { new: true }
+      { returnDocument: "after" }
     );
     return { message: "User log in updated", result };
   } else {

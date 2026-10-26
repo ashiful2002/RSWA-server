@@ -176,7 +176,7 @@ const updateCommitteeMemberInDB = async (
   const result = await CommitteeMember.findByIdAndUpdate(
     id,
     { $set: payload },
-    { new: true, runValidators: true }
+    { returnDocument: "after", runValidators: true }
   );
 
   if (!result) {

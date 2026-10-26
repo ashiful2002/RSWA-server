@@ -153,7 +153,7 @@ const updateProjectInDB = async (id: string, payload: Partial<IProject>) => {
   const result = await Project.findOneAndUpdate(
     filter,
     { $set: payload },
-    { new: true, runValidators: true }
+    { returnDocument: "after", runValidators: true }
   );
 
   if (!result) {
